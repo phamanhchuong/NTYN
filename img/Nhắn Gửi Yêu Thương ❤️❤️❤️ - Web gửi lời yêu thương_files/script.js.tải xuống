@@ -1,0 +1,2854 @@
+const themes = themesData;
+
+
+let swiper;
+
+
+const imageGrid = document.getElementById('imageGrid');
+
+
+const themeButtons = document.querySelectorAll('.theme-button');
+
+
+const uploadButton = document.getElementById('uploadButton');
+
+
+const fileInput = document.getElementById('fileInput');
+
+
+const previewCard = document.getElementById('previewCard');
+
+
+const messageTextarea = document.getElementById('messageTextarea');
+
+
+const charCount = document.getElementById('charCount');
+
+
+let imageCount = 0;
+
+
+let selectedImage = null;
+
+
+//let tempAudioFile = null;
+
+
+const audioState = {
+
+
+   tempFile : null
+
+
+};
+
+
+
+
+
+// Tạo một mảng chứa tất cả ảnh không trùng lặp cho tùy chọn "custom"
+
+
+const allImages = [...new Set(Object.values(themes).flat())];
+
+
+
+
+
+// Thêm tùy chọn "custom" vào themes
+
+
+themes.custom = allImages;
+
+
+
+
+
+function shuffleArray(array) {
+
+
+    for (let i = array.length - 1; i > 0; i--) {
+
+
+        const j = Math.floor(Math.random() * (i + 1));
+
+
+        [array[i], array[j]] = [array[j], array[i]];
+
+
+    }
+
+
+    return array;
+
+
+}
+
+
+
+
+
+function loadImages(theme) {
+
+
+    imageGrid.innerHTML = '';
+
+
+    let imagesToLoad = theme === 'custom' ? shuffleArray([...themes[theme]]) : themes[theme];
+
+
+    
+
+
+    imagesToLoad.forEach((src, index) => {
+
+
+        const slide = document.createElement('div');
+
+
+        slide.className = 'swiper-slide';
+
+
+        if (src === selectedImage) {
+
+
+            slide.classList.add('selected');
+
+
+        }
+
+
+        const img = document.createElement('img');
+
+
+        img.src = src;
+
+
+        img.alt = `${theme} image ${index + 1}`;
+
+
+        slide.appendChild(img);
+
+
+        imageGrid.appendChild(slide);
+
+
+    });
+
+
+
+
+
+    if (swiper) {
+
+
+        swiper.destroy();
+
+
+    }
+
+
+
+
+
+    swiper = new Swiper('.swiper', {
+
+
+        slidesPerView: 'auto',
+
+
+        spaceBetween: 10,
+
+
+        pagination: {
+
+
+            el: '.swiper-pagination',
+
+
+            clickable: true,
+
+
+        },
+
+
+        breakpoints: {
+
+
+            320: {
+
+
+                slidesPerView: 1,
+
+
+                spaceBetween: 10
+
+
+            },
+
+
+            480: {
+
+
+                slidesPerView: 2,
+
+
+                spaceBetween: 10
+
+
+            },
+
+
+            640: {
+
+
+                slidesPerView: 3,
+
+
+                spaceBetween: 10
+
+
+            },
+
+
+        },
+
+
+    });
+    swiper.update();
+
+
+
+
+    if (selectedImage) {
+
+
+        const selectedSlide = imageGrid.querySelector(`.swiper-slide.selected`);
+
+
+        if (selectedSlide) {
+
+
+            const slideIndex = Array.from(imageGrid.children).indexOf(selectedSlide);
+
+
+            swiper.slideTo(slideIndex);
+
+
+        }
+
+
+    } else if (imagesToLoad.length > 0) {
+
+
+        setPreviewBackground(imagesToLoad[0]);
+
+
+        imageGrid.querySelector('.swiper-slide').classList.add('selected');
+
+
+    }
+
+
+}
+
+
+
+
+
+function setPreviewBackground(imageSrc) {
+
+
+    previewCard.style.backgroundImage = `url(${imageSrc})`;
+
+
+    selectedImage = imageSrc;
+
+
+}
+
+
+
+
+
+imageGrid.addEventListener('click', (event) => {
+
+
+    const clickedSlide = event.target.closest('.swiper-slide');
+
+
+    if (clickedSlide) {
+
+
+        imageGrid.querySelectorAll('.swiper-slide').forEach(slide => {
+
+
+            slide.classList.remove('selected');
+
+
+        });
+
+
+        clickedSlide.classList.add('selected');
+
+
+        const clickedImage = clickedSlide.querySelector('img').src;
+
+
+        setPreviewBackground(clickedImage);
+
+
+    }
+
+
+});
+
+
+
+
+
+themeButtons.forEach(button => {
+
+
+    button.addEventListener('click', () => {
+
+
+        themeButtons.forEach(btn => btn.classList.remove('active'));
+
+
+        button.classList.add('active');
+
+
+        const theme = button.dataset.theme;
+
+
+        loadImages(theme);
+
+
+        uploadButton.style.display = theme === 'custom' ? 'block' : 'none';
+
+
+    });
+
+
+});
+
+
+
+
+
+// Chọn category đầu tiên làm mặc định khi tải trang
+
+
+document.addEventListener('DOMContentLoaded', () => {
+
+
+    const firstThemeButton = themeButtons[0];
+
+
+    if (firstThemeButton) {
+
+
+        firstThemeButton.click();
+
+
+    }
+
+
+});
+
+
+
+
+
+uploadButton.addEventListener('click', () => fileInput.click());
+
+
+
+
+
+fileInput.addEventListener('change', (event) => {
+
+
+    const files = event.target.files;
+
+
+    const previewContent = document.getElementById('previewContent');
+
+
+    
+
+
+    if (!previewContent) {
+
+
+        console.error('Không tìm thấy phần tử previewContent');
+
+
+        return;
+
+
+    }
+
+
+
+
+
+    for (let file of files) {
+
+
+        const reader = new FileReader();
+
+
+        reader.onload = (e) => {
+
+
+            const container = document.createElement('div');
+
+
+            container.className = 'draggable-image-container';
+
+
+            container.id = `container${imageCount}`;
+
+
+
+
+
+            const imgWrapper = document.createElement('div');
+
+
+            imgWrapper.className = 'image-wrapper';
+
+
+
+
+
+            const img = document.createElement('img');
+
+
+            img.src = e.target.result;
+
+
+            img.className = 'draggable-image';
+
+
+            img.id = `uploadedImage${imageCount}`;
+
+
+
+
+
+            const deleteButton = document.createElement('div');
+
+
+            deleteButton.className = 'delete-button';
+
+
+            deleteButton.innerHTML = '×';
+
+
+            deleteButton.onclick = function(e) {
+
+
+                e.stopPropagation();
+
+
+                container.remove();
+
+
+            };
+
+
+
+
+
+            imgWrapper.appendChild(img);
+
+
+            container.appendChild(imgWrapper);
+
+
+            container.appendChild(deleteButton);
+
+
+            previewContent.appendChild(container);
+
+
+
+
+
+            initializeInteract(`#${container.id}`);
+
+
+            imageCount++;
+
+
+        };
+
+
+        reader.readAsDataURL(file);
+
+
+    }
+
+
+    event.target.value = '';
+
+
+});
+
+
+
+
+
+
+
+
+function initializeInteract(selector) {
+
+
+    interact(selector)
+
+
+        .draggable({
+
+
+            inertia: true,
+
+
+            autoScroll: true,
+
+
+            listeners: {
+
+
+                move: dragMoveListener,
+
+
+            }
+
+
+        });
+
+
+
+
+
+    interact(`${selector} .image-wrapper`)
+
+
+        .resizable({
+
+
+            edges: { left: true, right: true, bottom: true, top: true },
+
+
+            listeners: {
+
+
+                move: resizeMoveListener
+
+
+            }
+
+
+        });
+
+
+}
+
+
+
+
+
+function dragMoveListener(event) {
+
+
+    const target = event.target;
+
+
+    const x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx;
+
+
+    const y = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy;
+
+
+
+
+
+    target.style.transform = `translate(${x}px, ${y}px)`;
+
+
+    target.setAttribute('data-x', x);
+
+
+    target.setAttribute('data-y', y);
+
+
+
+
+
+    target.style.zIndex = 1000;
+
+
+}
+
+
+
+
+
+function resizeMoveListener(event) {
+
+
+    const target = event.target;
+
+
+    const img = target.querySelector('img');
+
+
+    
+
+
+    let x = (parseFloat(target.getAttribute('data-x')) || 0);
+
+
+    let y = (parseFloat(target.getAttribute('data-y')) || 0);
+
+
+
+
+
+    Object.assign(img.style, {
+
+
+        width: `${event.rect.width}px`,
+
+
+        height: `${event.rect.height}px`,
+
+
+    });
+
+
+
+
+
+    Object.assign(target.style, {
+
+
+        width: `${event.rect.width}px`,
+
+
+        height: `${event.rect.height}px`,
+
+
+    });
+
+
+
+
+
+    Object.assign(target.dataset, { x, y });
+
+
+}
+
+
+
+
+
+['senderName', 'receiverName', 'messageTextarea'].forEach(id => {
+
+
+    document.getElementById(id).addEventListener('input', updatePreview);
+
+
+});
+
+
+// suggestion
+
+document.addEventListener('DOMContentLoaded', function() {
+    const suggestionList = document.querySelector('.suggestion-list');
+    const messageSuggestions = document.querySelector('.message-suggestions');
+    const loadMoreButton = document.getElementById('load-more-messages');
+    const spinnerContainer = document.querySelector('.spinner-container');
+    const categoryButtons = document.querySelectorAll('.category-button');
+    let currentPage = 1;
+    let currentCategory = '';
+
+    function attachMessageListeners() {
+        const suggestionItems = document.querySelectorAll('.suggestion-item');
+        suggestionItems.forEach(item => {
+            item.addEventListener('click', function() {
+                const messageTextarea = document.getElementById('messageTextarea');
+                messageTextarea.value = this.textContent.trim();
+                updatePreview();
+                updateCharCount();
+            });
+        });
+    }
+
+    attachMessageListeners();
+
+    document.getElementById('messageTextarea').addEventListener('input', function() {
+        updatePreview();
+        updateCharCount();
+    });
+
+    // Xử lý sự kiện click cho các nút danh mục
+    categoryButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            categoryButtons.forEach(btn => btn.classList.remove('active'));
+            this.classList.add('active');
+            currentCategory = this.dataset.category;
+            currentPage = 1;
+            loadMessages(true);
+        });
+    });
+
+    loadMoreButton.addEventListener('click', function() {
+        currentPage++;
+        loadMessages(false);
+    });
+
+    function loadMessages(replaceExisting) {
+        showSpinner();
+        loadMoreButton.disabled = true;
+
+        jQuery.ajax({
+            url: ngyth_ajax.ajaxurl,
+            type: 'POST',
+            data: {
+                action: 'get_messages',
+                nonce: ngyth_ajax.nonce,
+                page: currentPage,
+                category: currentCategory
+            },
+            success: function(response) {
+                hideSpinner();
+                loadMoreButton.disabled = false;
+
+                if (response.success && response.data.messages.length > 0) {
+                    if (replaceExisting) {
+                        suggestionList.innerHTML = '';
+                    }
+                    response.data.messages.forEach(msg => {
+                        const button = document.createElement('button');
+                        button.className = 'suggestion-item';
+                        button.textContent = msg;
+                        suggestionList.appendChild(button);
+                    });
+                    attachMessageListeners();
+                }
+                loadMoreButton.style.display = response.data.has_more ? 'block' : 'none';
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.error('AJAX error:', textStatus, errorThrown);
+                hideSpinner();
+                loadMoreButton.disabled = false;
+            }
+        });
+    }
+
+    function showSpinner() {
+        spinnerContainer.style.display = 'flex';
+        messageSuggestions.scrollTop = messageSuggestions.scrollHeight - messageSuggestions.clientHeight;
+    }
+
+    function hideSpinner() {
+        spinnerContainer.style.display = 'none';
+    }
+});
+
+
+
+
+
+// Xử lý click cho các suggestion items
+
+
+document.querySelector('.suggestion-list').addEventListener('click', function(event) {
+
+
+    if (event.target.classList.contains('suggestion-item')) {
+
+
+        const messageTextarea = document.getElementById('messageTextarea');
+
+
+        messageTextarea.value = event.target.textContent.trim();
+
+
+        updatePreview();
+
+
+        updateCharCount();
+
+
+    }
+
+
+});
+
+
+
+
+
+
+
+
+function updateCharCount() {
+
+
+    const messageTextarea = document.getElementById('messageTextarea');
+
+
+    const charCount = document.getElementById('charCount');
+
+
+    const remaining = 600 - messageTextarea.value.length;
+
+
+    charCount.textContent = `Còn lại: ${remaining} ký tự`;
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+const emojiList = {
+
+
+    faces: ['😀', '😂', '🥰', '😎', '🤔', '😴'],
+
+
+    animals: ['🐶', '🐱', '🐼', '🐨', '🦁', '🐸'],
+
+
+    food: ['🍎', '🍕', '🍣', '🍰', '🍷', '🍺'],
+
+
+    activities: ['⚽', '🏋️', '🎨', '🎮', '🚴', '🏖️']
+
+
+};
+
+
+
+
+
+const emojiButton = document.getElementById('emojiButton');
+
+
+
+
+
+function createEmojiPicker() {
+
+
+    const picker = document.createElement('div');
+
+
+    picker.className = 'emoji-picker';
+
+
+
+
+
+    Object.entries(emojiList).forEach(([category, emojis]) => {
+
+
+        const categoryDiv = document.createElement('div');
+
+
+        categoryDiv.className = 'emoji-category';
+
+
+
+
+
+        const title = document.createElement('div');
+
+
+        title.className = 'emoji-category-title';
+
+
+        title.textContent = category.charAt(0).toUpperCase() + category.slice(1);
+
+
+        categoryDiv.appendChild(title);
+
+
+
+
+
+        const emojiListDiv = document.createElement('div');
+
+
+        emojiListDiv.className = 'emoji-list';
+
+
+
+
+
+        emojis.forEach(emoji => {
+
+
+            const span = document.createElement('span');
+
+
+            span.className = 'emoji';
+
+
+            span.textContent = emoji;
+
+
+            span.onclick = () => {
+
+
+                messageTextarea.value += emoji;
+
+
+                updatePreview();
+
+
+                picker.classList.remove('active');
+
+
+            };
+
+
+            emojiListDiv.appendChild(span);
+
+
+        });
+
+
+
+
+
+        categoryDiv.appendChild(emojiListDiv);
+
+
+        picker.appendChild(categoryDiv);
+
+
+    });
+
+
+
+
+
+    document.querySelector('.message-area').appendChild(picker);
+
+
+    return picker;
+
+
+}
+
+
+
+
+
+const emojiPicker = createEmojiPicker();
+
+
+
+
+
+emojiButton.onclick = (e) => {
+
+
+    e.preventDefault();
+
+
+    emojiPicker.classList.toggle('active');
+
+
+};
+
+
+
+
+
+document.addEventListener('click', (e) => {
+
+
+    if (!emojiButton.contains(e.target) && !emojiPicker.contains(e.target)) {
+
+
+        emojiPicker.classList.remove('active');
+
+
+    }
+
+
+});
+
+
+
+
+
+//SONG
+
+
+
+
+
+document.addEventListener('DOMContentLoaded', function() {
+
+
+    const audioPlayer = new Audio();
+
+
+    let currentlyPlaying = null;
+
+
+    const musicList = document.getElementById('musicList');
+
+
+    const uploadButton = document.getElementById('uploadMusic');
+
+
+    const musicFileInput = document.getElementById('musicFileInput');
+
+
+    const loadMoreButton = document.getElementById('loadMoreSongs');
+
+
+    const spinnerContainer = loadMoreButton.querySelector('.spinner-container');
+
+
+    const buttonText = loadMoreButton.querySelector('.button-text');
+
+
+    let page = 1;
+
+
+
+
+
+    function createMusicItem(song) {
+
+
+        const musicItem = document.createElement('div');
+
+
+        musicItem.className = 'music-item';
+
+
+        musicItem.setAttribute('data-id', song.id);
+
+
+        musicItem.setAttribute('data-src', song.file);
+
+
+        musicItem.innerHTML = `
+
+
+            <img src="${song.thumbnail || 'http://me.test/wp-content/uploads/2024/09/bg1-1.png'}" alt="${song.title}" class="song-thumbnail">
+
+
+            <div class="song-info">
+
+
+                <span class="song-title">${song.title}</span>
+
+
+                <span class="song-artist">${song.artist || 'Chưa cập nhật'}</span>
+
+
+            </div>
+
+
+            <button class="play-button">
+
+
+                <span class="play-icon">▶</span>
+
+
+                <span class="pause-icon" style="display:none;">❚❚</span>
+
+
+            </button>
+
+
+        `;
+
+
+        return musicItem;
+
+
+    }
+
+
+
+
+
+    function playSong(button) {
+
+
+        const songData = {
+
+
+            id: button.getAttribute('data-id'),
+
+
+            src: button.getAttribute('data-src')
+
+
+        };
+
+
+
+
+
+        if (currentlyPlaying) {
+
+
+            currentlyPlaying.querySelector('.play-icon').style.display = 'inline';
+
+
+            currentlyPlaying.querySelector('.pause-icon').style.display = 'none';
+
+
+        }
+
+
+
+
+
+        if (currentlyPlaying === button) {
+
+
+            audioPlayer.pause();
+
+
+            currentlyPlaying = null;
+
+
+        } else {
+
+
+            audioPlayer.src = songData.src;
+
+
+            audioPlayer.play().then(() => {
+
+
+                button.querySelector('.play-icon').style.display = 'none';
+
+
+                button.querySelector('.pause-icon').style.display = 'inline';
+
+
+                currentlyPlaying = button;
+
+
+            }).catch(error => {
+
+
+                console.error(`Error playing song:`, error);
+
+
+            });
+
+
+        }
+
+
+    }
+
+
+
+
+
+    musicList.addEventListener('click', function(e) {
+
+
+        const clickedItem = e.target.closest('.music-item');
+
+
+
+
+
+        if (clickedItem) {
+
+
+            const isPlaying = clickedItem.classList.contains('playing');
+
+
+            
+
+
+            // Xóa class 'playing' khỏi tất cả các music-item
+
+
+            document.querySelectorAll('.music-item').forEach(item => {
+
+
+                item.classList.remove('playing');
+
+
+            });
+
+
+    
+
+
+            if (!isPlaying) {
+
+
+                // Nếu bài hát chưa phát, thêm class 'playing' và phát nó
+
+
+                clickedItem.classList.add('playing');
+
+
+                playSong(clickedItem);
+
+
+            } else {
+
+
+                // Nếu bài hát đang phát, dừng nó
+
+
+               // stopSong();
+
+
+            }
+
+
+        }
+
+
+    });
+
+
+
+
+
+    uploadButton.addEventListener('click', function() {
+
+
+        musicFileInput.click();
+
+
+    });
+
+
+
+
+
+    musicFileInput.addEventListener('change', function() {
+
+
+        
+
+
+        if (this.files[0]) {
+
+
+            const file = this.files[0];
+
+
+            const tempURL = URL.createObjectURL(file);
+
+
+           audioState.tempFile = this.files[0];
+
+
+            const newSong = {
+
+
+                id: 'temp_' + Date.now(),
+
+
+                file: tempURL,
+
+
+                title: file.name,
+
+
+                artist: 'Đang lưu tạm',
+
+
+                thumbnail: null
+
+
+            };
+
+
+            
+
+
+            const newMusicItem = createMusicItem(newSong);
+
+
+            // Thêm bài hát mới vào cuối danh sách
+
+
+            musicList.appendChild(newMusicItem);
+
+
+            
+
+
+            // Tự động phát bài hát mới
+
+
+            playSong(newMusicItem);
+
+
+            
+
+
+            // Cuộn xuống để hiển thị bài hát mới
+
+
+            newMusicItem.scrollIntoView({ behavior: 'smooth', block: 'end' });
+
+
+            
+
+
+            this.value = '';
+
+
+        }
+
+
+    });
+
+
+
+
+
+    loadMoreButton.addEventListener('click', function() {
+
+
+        loadMoreSongs(false);
+
+
+    });
+
+
+
+
+
+    function showSpinner() {
+
+
+        spinnerContainer.style.display = 'flex';
+
+
+        buttonText.style.visibility = 'hidden';
+
+
+        loadMoreButton.disabled = true;
+
+
+    }
+
+
+
+
+
+    function hideSpinner() {
+
+
+        spinnerContainer.style.display = 'none';
+
+
+        buttonText.style.visibility = 'visible';
+
+
+        loadMoreButton.disabled = false;
+
+
+    }
+
+
+
+
+
+    function loadMoreSongs(random = false) {
+
+
+        if (typeof ngyth_ajax === 'undefined') {
+
+
+            console.error('ngyth_ajax is not defined. Make sure the script is properly enqueued and localized.');
+
+
+            return;
+
+
+        }
+
+
+
+
+
+        showSpinner();
+
+
+
+
+
+        jQuery.ajax({
+
+
+            url: ngyth_ajax.ajaxurl,
+
+
+            type: 'POST',
+
+
+            data: {
+
+
+                action: 'get_songs',
+
+
+                nonce: ngyth_ajax.nonce,
+
+
+                page: page,
+
+
+                random: random
+
+
+            },
+
+
+            success: function(response) {
+
+
+                hideSpinner();
+
+
+                if (response.success && response.data.length > 0) {
+
+
+                    response.data.forEach(song => {
+
+
+                        musicList.appendChild(createMusicItem(song));
+
+
+                    });
+
+
+                    page++;
+
+
+                } else {
+
+
+                    loadMoreButton.style.display = 'none';
+
+
+                    console.log('No more songs to load');
+
+
+                }
+
+
+            },
+
+
+            error: function(jqXHR, textStatus, errorThrown) {
+
+
+                hideSpinner();
+
+
+                console.error('AJAX error:', textStatus, errorThrown);
+
+
+            }
+
+
+        });
+
+
+    }
+
+
+
+
+
+    // Chỉ tải 3 bài hát ngẫu nhiên ban đầu
+
+
+    loadMoreSongs(true);
+
+
+
+
+
+});
+
+
+
+
+
+/*
+
+
+document.addEventListener('DOMContentLoaded', function() {
+
+
+
+
+
+        const audioPlayer = new Audio();
+
+
+        let currentlyPlaying = null;
+
+
+        const musicList = document.getElementById('musicList');
+
+
+        const uploadButton = document.getElementById('uploadMusic');
+
+
+        const musicFileInput = document.getElementById('musicFileInput');
+
+
+    
+
+
+        function createMusicButton(song) {
+
+
+            const musicItem = document.createElement('div');
+
+
+            musicItem.className = 'music-item';
+
+
+            musicItem.innerHTML = `
+
+
+                <button class="music-button" 
+
+
+                        data-id="${song.id}"
+
+
+                        data-src="${song.file}">
+
+
+                    ${song.title}
+
+
+                    <div class="wave">
+
+
+                        <span></span><span></span><span></span><span></span>
+
+
+                    </div>
+
+
+                </button>
+
+
+            `;
+
+
+            return musicItem;
+
+
+        }
+
+
+    
+
+
+        function playSong(button) {
+
+
+            console.log("Attempting to play song:", button.textContent.trim());
+
+
+            const songData = {
+
+
+                id: button.getAttribute('data-id'),
+
+
+                src: button.getAttribute('data-src'),
+
+
+                title: button.textContent.trim()
+
+
+            };
+
+
+    
+
+
+            if (currentlyPlaying) {
+
+
+                currentlyPlaying.classList.remove('playing');
+
+
+            }
+
+
+    
+
+
+            audioPlayer.src = songData.src;
+
+
+            audioPlayer.play().then(() => {
+
+
+                console.log(`Now playing: ${songData.title}`);
+
+
+                button.classList.add('playing');
+
+
+                currentlyPlaying = button;
+
+
+            }).catch(error => {
+
+
+                console.error(`Error playing ${songData.title}:`, error);
+
+
+            });
+
+
+        }
+
+
+    
+
+
+        musicList.addEventListener('click', function(e) {
+
+
+            const button = e.target.closest('.music-button');
+
+
+            if (!button) return;
+
+
+    
+
+
+            if (currentlyPlaying === button) {
+
+
+                audioPlayer.pause();
+
+
+                button.classList.remove('playing');
+
+
+                currentlyPlaying = null;
+
+
+            } else {
+
+
+                playSong(button);
+
+
+            }
+
+
+        });
+
+
+    
+
+
+        uploadButton.addEventListener('click', function() {
+
+
+            musicFileInput.click();
+
+
+        });
+
+
+    
+
+
+       
+
+
+
+
+
+        musicFileInput.addEventListener('change', function() {
+
+
+            if (this.files[0]) {
+
+
+                const file = this.files[0];
+
+
+                console.log('File selected:', file.name);
+
+
+                
+
+
+                // Lưu file tạm thời
+
+
+                tempAudioFile = file;
+
+
+                
+
+
+                // Tạo một URL tạm thời cho file audio
+
+
+                const tempURL = URL.createObjectURL(file);
+
+
+                
+
+
+                // Tạo một đối tượng bài hát mới
+
+
+                const newSong = {
+
+
+                    id: 'temp_' + Date.now(), // ID tạm thời
+
+
+                    file: tempURL,
+
+
+                    title: file.name
+
+
+                };
+
+
+                
+
+
+                // Tạo và thêm nút bài hát mới
+
+
+                const newMusicItem = createMusicButton(newSong);
+
+
+                musicList.appendChild(newMusicItem);
+
+
+                
+
+
+                // Tự động phát bài hát mới
+
+
+                const newButton = newMusicItem.querySelector('.music-button');
+
+
+                playSong(newButton);
+
+
+                
+
+
+                // Reset input file
+
+
+                this.value = '';
+
+
+            }
+
+
+        });
+
+
+    
+
+
+        // Tải danh sách bài hát khi trang được load
+
+
+        $.ajax({
+
+
+            url: ngyth_ajax.ajaxurl,
+
+
+            type: 'POST',
+
+
+            data: {
+
+
+                action: 'get_songs',
+
+
+                nonce: ngyth_ajax.nonce
+
+
+            },
+
+
+            success: function(response) {
+
+
+                if (response.success) {
+
+
+                    response.data.forEach(song => {
+
+
+                        musicList.appendChild(createMusicButton(song));
+
+
+                    });
+
+
+                } else {
+
+
+                    console.error('Error loading songs:', response.data.message);
+
+
+                }
+
+
+            },
+
+
+            error: function(jqXHR, textStatus, errorThrown) {
+
+
+                console.error('AJAX error:', textStatus, errorThrown);
+
+
+            }
+
+
+        });
+
+
+}); */
+
+
+
+
+
+
+
+
+// document.addEventListener('DOMContentLoaded', function() {
+
+
+//     // Xử lý cuộn ngang
+
+
+//     const musicList = document.querySelector('.music-list');
+
+
+//     let isDown = false;
+
+
+//     let startX;
+
+
+//     let scrollLeft;
+
+
+
+
+
+//     musicList.addEventListener('mousedown', (e) => {
+
+
+//         isDown = true;
+
+
+//         musicList.style.cursor = 'grabbing';
+
+
+//         startX = e.pageX - musicList.offsetLeft;
+
+
+//         scrollLeft = musicList.scrollLeft;
+
+
+//     });
+
+
+
+
+
+//     musicList.addEventListener('mouseleave', () => {
+
+
+//         isDown = false;
+
+
+//         musicList.style.cursor = 'grab';
+
+
+//     });
+
+
+
+
+
+//     musicList.addEventListener('mouseup', () => {
+
+
+//         isDown = false;
+
+
+//         musicList.style.cursor = 'grab';
+
+
+//     });
+
+
+
+
+
+//     musicList.addEventListener('mousemove', (e) => {
+
+
+//         if (!isDown) return;
+
+
+//         e.preventDefault();
+
+
+//         const x = e.pageX - musicList.offsetLeft;
+
+
+//         const walk = (x - startX) * 2;
+
+
+//         musicList.scrollLeft = scrollLeft - walk;
+
+
+//     });
+
+
+// });
+
+
+
+
+
+
+
+
+function updatePreview() {
+
+
+    const senderName = document.getElementById('senderName').value.trim();
+
+
+    const receiverName = document.getElementById('receiverName').value.trim();
+
+
+    const message = messageTextarea.value;
+
+
+
+
+
+    const previewSenderContainer = document.getElementById('previewSenderContainer');
+
+
+    const previewReceiverContainer = document.getElementById('previewReceiverContainer');
+
+
+    const previewSender = document.getElementById('previewSender');
+
+
+    const previewReceiver = document.getElementById('previewReceiver');
+
+
+    const previewMessage = document.getElementById('previewMessage');
+
+
+    const textContent = document.querySelector('.text-content');
+
+
+
+
+
+    previewSenderContainer.style.display = senderName ? 'block' : 'none';
+
+
+    previewSender.textContent = senderName;
+
+
+
+
+
+    previewReceiverContainer.style.display = receiverName ? 'block' : 'none';
+
+
+    previewReceiver.textContent = receiverName;
+
+
+
+
+
+    const messageLines = message.split('\n');
+
+
+    previewMessage.innerHTML = messageLines.map(line => 
+
+
+        line ? `<p>${line}</p>` : '<br>'
+
+
+    ).join('');
+
+
+
+
+
+    previewMessage.querySelectorAll('p').forEach(p => {
+
+
+        p.innerHTML = p.innerHTML.replace(/(\p{Emoji_Presentation}|\p{Emoji}\uFE0F)/gu, match => 
+
+
+            `<span>${match}</span>`
+
+
+        );
+
+
+    });
+
+
+
+
+
+    previewMessage.style.fontSize = '16px';
+
+
+    while (textContent.scrollHeight > textContent.clientHeight) {
+
+
+        const fontSize = parseFloat(window.getComputedStyle(previewMessage).fontSize);
+
+
+        if (fontSize <= 8) break;
+
+
+        previewMessage.style.fontSize = (fontSize - 1) + 'px';
+
+
+    }
+
+
+}
+
+
+
+
+
+
+
+
+const step1 = document.getElementById('step1');
+
+
+const step2 = document.getElementById('step2');
+
+
+const goToStep2Button = document.getElementById('goToStep2Button');
+
+
+const backToStep1Button = document.getElementById('backToStep1Button');
+
+
+
+
+
+goToStep2Button.addEventListener('click', (event) => {
+
+
+    event.preventDefault();
+
+
+    if (validateStep1()) {
+
+
+        step1.style.display = 'none';
+
+
+        step2.style.display = 'block';
+
+
+    }
+
+
+});
+
+
+
+
+
+backToStep1Button.addEventListener('click', () => {
+
+
+    step2.style.display = 'none';
+
+
+    step1.style.display = 'block';
+
+
+});
+
+
+
+
+
+//const createLinkButton = document.getElementById('createLinkButton');
+
+
+const linkContainer = document.getElementById('linkContainer');
+
+
+const generatedLinkInput = document.getElementById('generatedLink');
+
+
+const copyLinkButton = document.getElementById('copyLinkButton');
+
+
+
+
+
+
+
+
+copyLinkButton.addEventListener('click', () => {
+
+
+    generatedLinkInput.select();
+
+
+    document.execCommand('copy');
+
+
+    
+
+
+    const originalText = copyLinkButton.textContent;
+
+
+    copyLinkButton.textContent = 'Đã copy!';
+
+
+    setTimeout(() => {
+
+
+        copyLinkButton.textContent = originalText;
+
+
+    }, 2000);
+
+
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// function validateStep2() {
+
+
+//     const password = document.getElementById('password').value.trim();
+
+
+//     if (password === '') {
+
+
+//         alert('Vui lòng nhập mật khẩu bảo vệ.');
+
+
+//         return false;
+
+
+//     }
+
+
+//     return true;
+
+
+// }
+
+
+const createLinkButton = document.getElementById('createLinkButton');
+
+
+
+
+
+createLinkButton.addEventListener('click', async (event) => {
+
+
+    event.preventDefault();
+
+
+    if (validateStep2()) {
+
+
+        console.log( audioState.tempFile );
+
+
+        const cardData = {
+
+
+            sender: document.getElementById('senderName').value,
+
+
+            receiver: document.getElementById('receiverName').value,
+
+
+            message: document.getElementById('messageTextarea').value,
+
+
+            background: document.querySelector('.swiper-slide.selected img').src,
+
+
+            password: document.getElementById('password').value,
+
+
+            custom_images: Array.from(document.querySelectorAll('#previewContent .draggable-image-container')).map(container => {
+
+
+                const img = container.querySelector('img');
+
+
+                return {
+
+
+                    url: img.src,
+
+
+                    position: {
+
+
+                        x: parseFloat(container.dataset.x) || 0,
+
+
+                        y: parseFloat(container.dataset.y) || 0
+
+
+                    },
+
+
+                    size: {
+
+
+                        width: img.width,
+
+
+                        height: img.height
+
+
+                    }
+
+
+                };
+
+
+            }),
+
+
+            song: (() => {
+
+
+                const songButton = document.querySelector('.music-item.playing');
+
+
+                console.log(songButton);
+
+
+                if (songButton) {
+
+
+                
+
+
+                    if (audioState.tempFile) {
+
+
+                        // Đây là bài hát tạm thời, cần upload
+
+
+                        console.log('Temporary audio file:', audioState.tempFile.name );
+
+
+                       
+
+
+            
+
+
+                        return {
+
+
+                            file: audioState.tempFile,
+
+
+                            title: audioState.tempFile.name,
+
+
+                            
+
+
+                        };
+
+
+                    } else {
+
+
+                        // Đây là bài hát đã có sẵn
+
+
+                        return {
+
+
+                            id: songButton.dataset.id,
+
+
+                            url: songButton.dataset.src,
+
+
+                            title: songButton.querySelector('.song-title').textContent.trim()
+
+
+                        };
+
+
+                    }
+
+
+                }
+
+
+                
+
+
+                return null;
+
+
+            })()
+
+
+        };
+
+
+        
+
+
+        // Tạo FormData object để gửi dữ liệu và file
+
+
+        const formData = new FormData();
+
+
+        
+
+
+        // Thêm các trường dữ liệu text
+
+
+        formData.append('sender', cardData.sender);
+
+
+        formData.append('receiver', cardData.receiver);
+
+
+        formData.append('message', cardData.message);
+
+
+        formData.append('background', cardData.background);
+
+
+        formData.append('password', cardData.password);
+
+
+        
+
+
+        // Thêm ảnh tùy chỉnh
+
+
+        cardData.custom_images.forEach((image, index) => {
+
+
+            formData.append(`custom_images[${index}][url]`, image.url);
+
+
+            formData.append(`custom_images[${index}][position][x]`, image.position.x);
+
+
+            formData.append(`custom_images[${index}][position][y]`, image.position.y);
+
+
+            formData.append(`custom_images[${index}][size][width]`, image.size.width);
+
+
+            formData.append(`custom_images[${index}][size][height]`, image.size.height);
+
+
+        });
+
+
+
+
+
+        // Thêm bài hát nếu có
+
+
+        // if (cardData.song) {
+
+
+        //     formData.append('song_id', cardData.song.id);
+
+
+        // }
+
+
+        if (cardData.song) {
+
+
+            if (audioState.tempFile) {
+
+
+                console.log('Sending card data:', formData);
+
+
+
+
+
+                
+
+
+                // Bài hát tạm thời
+
+
+                formData.append('song_file', cardData.song.file);
+
+
+                formData.append('song_title', cardData.song.title);
+
+
+                console.log(cardData.song.file);
+
+
+
+
+
+            } else {
+
+
+                // Bài hát có sẵn
+
+
+                formData.append('song_id', cardData.song.id);
+
+
+            }
+
+
+        }
+
+
+       
+
+
+
+
+
+        // Thêm action và nonce
+
+
+        formData.append('action', 'save_card');
+
+
+        formData.append('nonce', ngyth_ajax.nonce);
+
+
+
+
+
+        try {
+
+
+            const response = await fetch(ngyth_ajax.ajaxurl, {
+
+
+                method: 'POST',
+
+
+                body: formData
+
+
+            });
+
+
+
+
+
+            const data = await response.json();
+
+
+
+
+
+            if (data.success) {
+
+
+                const generatedLink = `${ngyth_ajax.card_url}?id=${data.data.card_id}`;
+
+
+                document.getElementById('generatedLink').value = generatedLink;
+
+
+                document.getElementById('linkContainer').style.display = 'block';
+
+
+            } else {
+
+
+                alert('Có lỗi xảy ra khi tạo thiệp: ' + data.data.message);
+
+
+            }
+
+
+        } catch (error) {
+
+
+            console.error('AJAX error:', error);
+
+
+            alert('Có lỗi xảy ra khi kết nối với server.');
+
+
+        }
+
+
+    }
+
+
+});
+
+
+
+
+
+function showError(message) {
+
+
+    return Swal.fire({
+
+
+        icon: 'error',
+
+
+        title: 'Lỗi',
+
+
+        text: message,
+
+
+        confirmButtonColor: '#FD49A0',
+
+
+    });
+
+
+}
+
+
+function validateStep1() {
+
+
+    const senderName = document.getElementById('senderName').value.trim();
+
+
+    const receiverName = document.getElementById('receiverName').value.trim();
+
+
+    const message = messageTextarea.value.trim();
+
+
+
+
+
+    if (senderName === '') {
+
+
+        showError('Nhập tên của bạn nhé, nếu muốn ẩn danh thì hãy để như là Người ẩn danh, người thầm lặng, người đứng nhìn từ xa... .');
+
+
+        return false;
+
+
+    }
+
+
+
+
+
+    if (receiverName === '') {
+
+
+        showError('Nhập tên của người thương nha, ví dụ như là con gấu nhỏ, hay là cô bé mùa đông chẳng hạn, cũng có thể là Anh chàng dễ thương.');
+
+
+        return false;
+
+
+    }
+
+
+
+
+
+    if (message === '') {
+
+
+        showError('Hãy gửi 1 lời yêu thương với người mình thương nha.  Ví dụ: Anh yêu em 💖💖💖');
+
+
+        return false;
+
+
+    }
+
+
+
+
+
+    return true;
+
+
+}
+
+
+
+
+
+function validateStep2() {
+
+
+    const password = document.getElementById('password').value.trim();
+
+
+    if (password === '') {
+
+
+        showError('Mật khẩu phải viết liền không dấu và tối đa là 32 ký tự. ví dụ: anhyeuem, iloveu, conyeume,...');
+
+
+        return false;
+
+
+    }
+
+
+    return true;
+
+
+}
+function copyLink() {
+    const linkInput = document.getElementById('copyLinkButton');
+    linkInput.select();
+    document.execCommand('copy');
+    
+    Swal.fire({
+        icon: 'success',
+        title: 'Đã sao chép',
+        text: 'Link đã được sao chép vào clipboard!',
+        confirmButtonColor: '#FD49A0',
+        timer: 1500,
+        showConfirmButton: false
+    });
+}
+
+
+
+
+// Initialize
+
+
+//loadImages('mau1');
+
+
+updatePreview();
+
+
+
+document.addEventListener('DOMContentLoaded', function() {
+    const scrollContainer = document.querySelector('.scrollable-container');
+    let isDown = false;
+    let startX;
+    let scrollLeft;
+
+    scrollContainer.addEventListener('mousedown', (e) => {
+        isDown = true;
+        scrollContainer.style.cursor = 'grabbing';
+        startX = e.pageX - scrollContainer.offsetLeft;
+        scrollLeft = scrollContainer.scrollLeft;
+    });
+
+    scrollContainer.addEventListener('mouseleave', () => {
+        isDown = false;
+        scrollContainer.style.cursor = 'grab';
+    });
+
+    scrollContainer.addEventListener('mouseup', () => {
+        isDown = false;
+        scrollContainer.style.cursor = 'grab';
+    });
+
+    scrollContainer.addEventListener('mousemove', (e) => {
+        if (!isDown) return;
+        e.preventDefault();
+        const x = e.pageX - scrollContainer.offsetLeft;
+        const walk = (x - startX) * 2; //scroll-fast
+        scrollContainer.scrollLeft = scrollLeft - walk;
+    });
+
+    scrollContainer.addEventListener('wheel', (evt) => {
+        evt.preventDefault();
+        scrollContainer.scrollLeft += evt.deltaY;
+    });
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+
+
+    const toggleViewButton = document.getElementById('toggleViewButton');
+
+
+    const inputColumn = document.querySelector('.input-column');
+
+
+    const previewColumn = document.querySelector('.preview-column');
+
+
+
+
+
+    function toggleView() {
+
+
+        const isPreviewVisible = previewColumn.style.display !== 'none';
+
+
+        
+
+
+        if (isPreviewVisible) {
+
+
+            previewColumn.style.display = 'none';
+
+
+            inputColumn.style.display = 'block';
+
+
+            toggleViewButton.textContent = 'Xem trước';
+
+
+        } else {
+
+
+            previewColumn.style.display = 'block';
+
+
+            inputColumn.style.display = 'none';
+
+
+            toggleViewButton.textContent = 'Chỉnh sửa';
+
+
+            // Cập nhật preview nếu cần
+
+
+            updatePreview();
+
+
+        }
+
+
+    }
+
+
+
+
+
+    toggleViewButton.addEventListener('click', toggleView);
+
+
+
+
+
+    // Khởi tạo ban đầu cho mobile
+
+
+    if (window.innerWidth <= 768) {
+
+
+        previewColumn.style.display = 'none';
+
+
+    }
+
+
+});

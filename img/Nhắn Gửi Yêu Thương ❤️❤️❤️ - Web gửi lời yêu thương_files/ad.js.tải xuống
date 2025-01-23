@@ -1,0 +1,215 @@
+var clickMarkKey_1 = 'clickMarkKey_1';
+var checkClickTimer_1;
+var clickMarkKey_2 = 'clickMarkKey_2';
+var checkClickTimer_2;
+var clickMarkKey_3 = 'clickMarkKey_3';
+var checkClickTimer_3;
+var clickMarkKey_4 = 'clickMarkKey_4';
+var checkClickTimer_4;
+var clickMarkKey_5 = 'clickMarkKey_5';
+var checkClickTimer_5;
+var hour = 3 * 60* 60 * 1000;
+//console.log(checkClickTimer_1);
+
+function init_1() {
+    var now = new Date().getTime();
+var banner = document.querySelector('.banner_1');
+    //kiem tra trong ngay da click quang cao chua
+    var checkClicked_1 = Number(window.localStorage.getItem(clickMarkKey_1));
+    var checkClicked_2 = Number(window.localStorage.getItem(clickMarkKey_2));
+    var checkClicked_3 = Number(window.localStorage.getItem(clickMarkKey_3));
+    var checkClicked_4 = Number(window.localStorage.getItem(clickMarkKey_4));
+    var checkClicked_5 = Number(window.localStorage.getItem(clickMarkKey_5));
+    console.log('- 1: ' + checkClicked_1 + ' - 2: '+checkClicked_2+ ' - 3: '+checkClicked_3+ ' - 4: '+checkClicked_4 + ' - 5: '+checkClicked_5);
+    //console.log('- 1: ' + checkClicked_1 + hour+' - 2: '+checkClicked_2+ + hour+' - 3: '+checkClicked_3+ hour +' - 4: '+checkClicked_4 + hour +' - 5: '+checkClicked_5+ hour  );
+    //da click roi thi khong xu ly gi ca
+    if (now <= checkClicked_1 + hour) {
+        hideInsAds_1();
+
+    } else if (now <= checkClicked_2 + hour) {
+        hideInsAds_2();
+
+    } else if (now <= checkClicked_3 + hour) {
+        hideInsAds_3();
+
+    } else if (now <= checkClicked_4 + hour) {
+        hideInsAds_4();
+
+    } else if (now <= checkClicked_5 + hour) {
+        hideInsAds_5();
+
+    }
+    //tao so random de check vi du tao so random=5 thi moi chay doan scripts them ads
+    //tao so random tu 0 ->9
+    var check_01 = banner.getAttribute('data-check');
+
+    var randomMatch = 1;
+    var r = Math.round(Math.random() * 1);
+	if(check_01 === '0'){
+	r = 1;
+}
+    console.log(r);
+    const arr = [8583720182, 5393184713, 4080103042, 8392148492, 7079066827, 4152125353, 6887495136, 9114203220, 6488039889, 6514694691];
+    const id_r = getRandomDifferent(arr);
+    //const r2 = getRandomDifferent(arr, r1); // r2 is different than r1.
+    //console.log(id_r);
+    //if (r == randomMatch) {
+    //script block ads unit cua google
+    var scriptAds = `<ins class="adsbygoogle my-3" style="display:block;text-align:center" data-ad-client="ca-pub-ca-pub-6842882980916485" data-ad-slot="` + id_r + `" data-ad-format="auto" data-full-width-responsive="true"></ins><script>(adsbygoogle = window.adsbygoogle || []).push({});</script>`
+    //console.log(scriptAds);
+    var adsUnit = jQuery(scriptAds);
+    jQuery('.banner_1').prepend(adsUnit);
+
+    //timer kiem tra neu da click roi thi an ads quang cao di
+
+    startCheckClickAds_1();
+    startCheckClickAds_2();
+    startCheckClickAds_3();
+    startCheckClickAds_4();
+    startCheckClickAds_5();
+    /* }else{
+         hideInsAds_1();
+      }*/
+}
+
+function startCheckClickAds_1() {
+    if (checkClickTimer_1 == undefined || checkClickTimer_1 == null) {
+        checkClickTimer_1 = setInterval(function() {
+            // var checkClicked_1 = window.localStorage.getItem(clickMarkKey_1 + dateToStringAds_1(new Date()));
+            var now = new Date().getTime();
+			console.log(now);
+            var checkClicked_1 = Number(window.localStorage.getItem(clickMarkKey_1));
+            if (now <= checkClicked_1 + hour) {
+                hideInsAds_1();
+                if (checkClickTimer_1 != undefined && checkClickTimer_1 != null) {
+                    clearInterval(checkClickTimer_1);
+                    checkClickTimer_1 = null;
+                }
+            }
+        }, 3000);
+    }
+}
+
+
+
+function startCheckClickAds_2() {
+    if (checkClickTimer_2 == undefined || checkClickTimer_2 == null) {
+        checkClickTimer_2 = setInterval(function() {
+            // var checkClicked_2 = window.localStorage.getItem(clickMarkKey_2 + dateToStringAds_2(new Date()));
+            var now = new Date().getTime();
+            var checkClicked_2 = Number(window.localStorage.getItem(clickMarkKey_2));
+            if (now <= checkClicked_2 + hour) {
+                hideInsAds_2();
+                if (checkClickTimer_2 != undefined && checkClickTimer_2 != null) {
+                    clearInterval(checkClickTimer_2);
+                    checkClickTimer_2 = null;
+                }
+            }
+        }, 3000);
+    }
+
+}
+
+function startCheckClickAds_3() {
+    if (checkClickTimer_3 == undefined || checkClickTimer_3 == null) {
+        checkClickTimer_3 = setInterval(function() {
+            // var checkClicked_3 = window.localStorage.getItem(clickMarkKey_3 + dateToStringAds_3(new Date()));
+            var now = new Date().getTime();
+            var checkClicked_3 = Number(window.localStorage.getItem(clickMarkKey_3));
+            if (now <= checkClicked_3 + hour) {
+                hideInsAds_3();
+                if (checkClickTimer_3 != undefined && checkClickTimer_3 != null) {
+                    clearInterval(checkClickTimer_3);
+                    checkClickTimer_3 = null;
+                }
+            }
+        }, 3000);
+    }
+
+}
+
+function startCheckClickAds_4() {
+    if (checkClickTimer_4 == undefined || checkClickTimer_4 == null) {
+        checkClickTimer_4 = setInterval(function() {
+            // var checkClicked_4 = window.localStorage.getItem(clickMarkKey_4 + dateToStringAds_4(new Date()));
+            var now = new Date().getTime();
+            var checkClicked_4 = Number(window.localStorage.getItem(clickMarkKey_4));
+            if (now <= checkClicked_4 + hour) {
+                hideInsAds_4();
+                if (checkClickTimer_4 != undefined && checkClickTimer_4 != null) {
+                    clearInterval(checkClickTimer_4);
+                    checkClickTimer_4 = null;
+                }
+            }
+        }, 3000);
+    }
+
+}
+
+function startCheckClickAds_5() {
+    if (checkClickTimer_5 == undefined || checkClickTimer_5 == null) {
+        checkClickTimer_5 = setInterval(function() {
+            // var checkClicked_5 = window.localStorage.getItem(clickMarkKey_5 + dateToStringAds_5(new Date()));
+            var now = new Date().getTime();
+            var checkClicked_5 = Number(window.localStorage.getItem(clickMarkKey_5));
+            if (now <= checkClicked_5 + hour) {
+                hideInsAds_5();
+                if (checkClickTimer_5 != undefined && checkClickTimer_5 != null) {
+                    clearInterval(checkClickTimer_5);
+                    checkClickTimer_5 = null;
+                }
+            }
+        }, 3000);
+    }
+
+}
+
+//an frame di
+function hideInsAds_1() {
+    var ads = jQuery('.axx-1');
+    ads.remove();
+}
+
+function hideInsAds_2() {
+    var ads = jQuery('.axx-2');
+    ads.remove();
+}
+
+function hideInsAds_3() {
+    var ads = jQuery('.axx-3');
+    ads.remove();
+}
+
+function hideInsAds_4() {
+    var ads = jQuery('.axx-4');
+    ads.remove();
+}
+
+function hideInsAds_5() {
+    var ads = jQuery('.axx-5');
+    ads.remove();
+}
+
+function dateToStringAds_1(_date) {
+    var dd = _date.getDate();
+    var mm = _date.getMonth() + 1;
+    var yyyy = _date.getFullYear();
+    return (dd < 10 ? ('0' + dd) : dd) + '/' + (mm < 10 ? ('0' + mm) : mm) + '/' + yyyy
+}
+
+function getRandomDifferent(arr, last = undefined) {
+    if (arr.length === 0) {
+        return null;
+    } else if (arr.length === 1) {
+        return arr[0];
+    } else {
+        let num = 0;
+        do {
+            num = Math.floor(Math.random() * arr.length);
+        } while (arr[num] === last);
+        return arr[num];
+    }
+}
+
+//thuc hien chay doan them ads vao trang
+init_1()

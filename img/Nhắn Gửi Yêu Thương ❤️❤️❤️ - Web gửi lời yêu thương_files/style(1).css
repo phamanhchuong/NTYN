@@ -1,0 +1,1415 @@
+/* =Reset
+
+-------------------------------------------------------------- */
+
+:root{
+
+    --main-color: #FD49A0;
+
+    --second-color:  #ff69b4;
+
+    --green-color: #4CAF50;
+
+    }
+
+    html, body, div, span, applet, object, iframe,
+
+    h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+
+    a, abbr, acronym, address, big, cite, code,
+
+    del, dfn, em, font, ins, kbd, q, s, samp,
+
+    small, strike, strong, sub, sup, tt, var,
+
+    dl, dt, dd, ol, ul, li,
+
+    fieldset, form, label, legend,
+
+    table, caption, tbody, tfoot, thead, tr, th, td {
+
+        border: 0;
+
+        font-family: inherit;
+
+        font-style: inherit;
+
+        font-weight: inherit;
+
+        margin: 0;
+
+        outline: 0;
+
+        padding: 0;
+
+        vertical-align: baseline;
+
+    }
+
+    
+
+    body {
+
+        background: #fff;
+
+    }
+
+    article,
+
+    aside,
+
+    details,
+
+    figcaption,
+
+    figure,
+
+    footer,
+
+    header,
+
+    hgroup,
+
+    nav,
+
+    section {
+
+        display: block;
+
+    }
+
+    ol, ul {
+
+        list-style: none;
+
+    }
+
+    table { /* tables still need 'cellspacing="0"' in the markup */
+
+        border-collapse: separate;
+
+        border-spacing: 0;
+
+    }
+
+    caption, th, td {
+
+        font-weight: normal;
+
+        text-align: left;
+
+    }
+
+    blockquote:before, blockquote:after,
+
+    q:before, q:after {
+
+        content: "";
+
+    }
+
+    blockquote, q {
+
+        quotes: "" "";
+
+    }
+
+    a:focus, *:focus, *:focus-visible{
+
+        outline: 0;
+
+    }
+
+    a:hover,
+
+    a:active { /* Improves readability when focused and also mouse hovered in all browsers people.opera.com/patrickl/experiments/keyboard/test */
+
+        outline: 0;
+
+    }
+
+    a img {
+
+        border: 0;
+
+    }
+
+
+
+    input[type="text"], input[type="email"], input[type="url"], input[type="password"], input[type="search"], input[type="number"], input[type="tel"], input[type="range"], input[type="date"], input[type="month"], input[type="week"], input[type="time"], input[type="datetime"], input[type="datetime-local"], input[type="color"], textarea{
+
+        background-color: #fff;
+
+    }
+
+
+
+    button, input[type="button"], input[type="reset"], input[type="submit"]{
+
+        color:#fff;
+        background-color: var(--second-color);
+        border-color: var(--second-color);
+
+    }
+
+    button:hover, input[type="button"]:hover, input[type="reset"]:hover, input[type="submit"]:hover,
+    button:active, button:focus, input[type="button"]:active, input[type="button"]:focus, input[type="reset"]:active, input[type="reset"]:focus, input[type="submit"]:active, input[type="submit"]:focus{opacity: 1;}
+    body {
+
+        font-family: Arial, sans-serif;
+
+        margin: 0;
+
+        padding: 20px;
+
+        background-color: #fff0f5;
+
+        height: 100vh;
+
+        box-sizing: border-box;
+
+    }
+
+    .container {
+
+        max-width: 1200px;
+
+        margin: 0 auto;
+
+        display: flex;
+
+        gap: 20px;
+
+        /* height: calc(100vh - 40px);
+
+        overflow: hidden; */
+
+    }
+
+    .input-column, .preview-column {
+
+        flex: 1;
+
+        background: white;
+
+        border-radius: 8px;
+
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+
+    }
+
+    .input-column {
+
+      
+
+        padding: 20px;
+
+    }
+
+    .preview-column {
+
+        display: flex;
+
+        flex-direction: column;
+
+        overflow: hidden;
+
+    }
+
+    h1 {
+
+        color: var(--main-color);
+
+        margin-top: 0;
+
+    }
+
+    .form-group {
+
+        margin-bottom: 15px;
+
+    }
+
+    label {
+
+        display: block;
+
+        margin-bottom: 5px;
+
+    }
+
+    input, textarea, select {
+
+        width: 100%;
+
+        padding: 8px;
+
+        border: 1px solid #ddd;
+
+        border-radius: 4px;
+
+        box-sizing: border-box;
+
+    }
+
+    .theme-selector {
+
+        display: flex;
+
+        gap: 10px;
+
+        margin-bottom: 15px;
+
+        overflow-x: auto;
+
+        padding-bottom: 5px;
+
+    }
+
+    .theme-button {
+
+        padding: 10px 15px;
+
+        background-color: #f0f0f0;
+
+        border: none;
+
+        border-radius: 20px;
+
+        cursor: pointer;
+
+        white-space: nowrap;
+
+        color: var(--main-color)
+
+    }
+
+    .theme-button.active {
+
+        background-color: var(--main-color);
+
+        color: white;
+
+    }
+
+    .swiper {
+
+        width: 100%;
+
+        height: 200px;
+
+        margin-bottom: 15px;
+
+    }
+
+    .swiper-slide {
+
+        text-align: center;
+
+        background: #f8f8f8;
+
+        display: flex;
+
+        justify-content: center;
+
+        align-items: center;
+
+        border-radius: 8px;
+
+        overflow: hidden;
+
+        position: relative;
+        width: auto !important; /* Override inline style */
+        height: auto;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+    }
+
+    .swiper-slide img {
+
+        display: block;
+
+        width: 100%;
+
+        height: 100%;
+
+        object-fit: cover;
+
+    }
+
+    .swiper-slide.selected::after {
+
+        content: '✓';
+
+        position: absolute;
+
+        top: 5px;
+
+        right: 5px;
+
+        background-color: var(--green-color);
+
+        color: white;
+
+        width: 20px;
+
+        height: 20px;
+
+        border-radius: 50%;
+
+        display: flex;
+
+        align-items: center;
+
+        justify-content: center;
+
+        font-size: 12px;
+
+    }
+
+    .upload-button {
+
+        display: none;
+
+        width: 100%;
+
+        padding: 10px;
+
+        background-color: var(--second-color);
+
+        color: white;
+
+        border: none;
+
+        border-radius: 4px;
+
+        cursor: pointer;
+
+        margin-bottom: 15px;
+
+    }
+
+    
+    .message-category-buttons {
+        display: flex;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        overflow-y: hidden;
+        width: 100%;
+        max-width: 600px;
+        padding: 10px 0;
+        gap: 10px;
+        scrollbar-width: thin;
+        scrollbar-color: #888 #f1f1f1;
+    }
+    
+    .message-category-buttons::-webkit-scrollbar {
+        height: 6px;
+    }
+    
+    .message-category-buttons::-webkit-scrollbar-track {
+        background: #f1f1f1;
+    }
+    
+    .message-category-buttons::-webkit-scrollbar-thumb {
+        background: #888;
+        border-radius: 3px;
+    }
+    
+    .message-category-buttons::-webkit-scrollbar-thumb:hover {
+        background: #555;
+    }
+    
+    .category-button {
+        flex: 0 0 auto;
+        padding: 10px 15px;
+        background-color: var(--second-color);
+        border: none;
+        border-radius: 20px;
+        cursor: pointer;
+        white-space: nowrap;
+    }
+    
+    .category-button.active {
+        background-color: var(--main-color);
+        color: white;
+    }
+    .message-suggestions-container {
+
+        display: flex;
+
+        flex-direction: column;
+
+        position: relative;
+
+    }
+
+    
+
+    .message-suggestions {
+
+        max-height: 190px; /* Điều chỉnh chiều cao tùy ý */
+
+        overflow-y: auto;
+
+        margin-bottom: 10px;
+
+       
+
+    }
+
+    
+
+    .suggestion-list {
+
+        display: flex;
+
+        flex-direction: column;
+
+    }
+
+    
+
+    .suggestion-item {
+
+        margin-bottom: 10px;
+
+        padding: 10px;
+
+        background-color: #f0f0f0;
+
+        border: none;
+
+        border-radius: 5px;
+
+        cursor: pointer;
+
+        text-align: left;
+
+        transition: background-color 0.3s;
+        color:#000
+
+    }
+
+    
+
+    .suggestion-item:hover {
+
+        background-color: #e0e0e0;
+
+    }
+
+    
+
+    .load-more-button {
+
+        padding: 10px;
+
+        background-color: var(--second-color);
+
+        color: white;
+
+        border: none;
+
+        border-radius: 5px;
+
+        cursor: pointer;
+
+        transition: background-color 0.3s;
+
+    }
+
+    
+
+    .load-more-button:hover {
+
+        background-color: #45a049;
+
+    }
+
+    
+
+    .spinner-container {
+
+        position: absolute;
+
+        bottom: 0;
+
+        left: 0;
+
+        right: 0;
+
+        padding: 10px 0;
+
+        background-color: rgba(255, 255, 255, 0.8);
+
+        display: flex;
+
+        justify-content: center;
+
+        align-items: center;
+
+    }
+
+    
+
+    .spinner {
+
+        width: 30px;
+
+        height: 30px;
+
+    }
+
+    
+
+    .spinner-inner {
+
+        width: 100%;
+
+        height: 100%;
+
+        border: 3px solid #f3f3f3;
+
+        border-top: 3px solid #3498db;
+
+        border-radius: 50%;
+
+        animation: spin 1s linear infinite;
+
+    }
+
+    
+
+    @keyframes spin {
+
+        0% { transform: rotate(0deg); }
+
+        100% { transform: rotate(360deg); }
+
+    }
+
+    
+
+    
+
+    .preview-card {
+
+        background-size: cover;
+
+        background-repeat: no-repeat;
+
+        background-position: center;
+
+        width: 100%;
+
+        height: 100vh;
+
+        position: relative;
+
+        border-radius: 8px;
+
+        overflow: hidden;
+
+    }
+
+    .preview-content {
+
+        position: relative;
+
+        width: 100%;
+
+        height: 100%;
+
+        overflow: visible;
+
+    }
+
+    .text-content {
+
+        position: absolute;
+
+        top: 10%;
+
+        left: 15%;
+
+        width: 70%;
+
+        height: 80%;
+
+        overflow: hidden;
+
+        display: flex;
+
+        flex-direction: column;
+
+        justify-content: center;
+
+        align-items: center;
+
+        text-align: center;
+
+    }
+
+    #charCount {
+
+        font-size: 0.8em;
+
+        color: #666;
+
+        text-align: right;
+
+        margin-top: 5px;
+
+    }
+
+    #previewSenderContainer {
+
+        text-align: right;
+
+        width: 100%;
+
+    }
+
+    #previewReceiverContainer {
+
+        text-align: left;
+
+        width: 100%;
+
+    }
+
+    #previewMessage {
+
+        margin: 10px 0;
+
+        word-wrap: break-word;
+
+    }
+
+    .draggable-image-container {
+
+        position: absolute;
+
+        touch-action: none;
+
+        user-select: none;
+
+        z-index: 1000;
+
+    }
+
+    .image-wrapper {
+
+        position: relative;
+
+        width: 100px;
+
+        height: 100px;
+
+    }
+
+    .delete-button {
+
+        position: absolute;
+
+        top: -10px;
+
+        right: -10px;
+
+        background-color: red;
+
+        color: white;
+
+        border-radius: 50%;
+
+        width: 20px;
+
+        height: 20px;
+
+        text-align: center;
+
+        line-height: 20px;
+
+        cursor: pointer;
+
+        display: none;
+
+        z-index: 1001;
+
+    }
+
+    .draggable-image-container:hover .delete-button {
+
+        display: block;
+
+    }
+
+    .draggable-image {
+
+        width: 100%;
+
+        height: 100%;
+
+        object-fit: contain;
+
+    }
+
+    .step-button {
+
+        display: block;
+
+        width: 100%;
+
+        padding: 10px;
+
+        background-color: var(--second-color);
+
+        color: white;
+
+        border: none;
+
+        border-radius: 4px;
+
+        cursor: pointer;
+
+        margin-top: 15px;
+
+        font-size: 16px;
+
+    }
+
+    .step-button:hover {
+
+        background-color: #45a049;
+
+    }
+
+    .link-input-container {
+
+        display: flex;
+
+        margin-top: 5px;
+
+    }
+
+    #generatedLink {
+
+        flex-grow: 1;
+
+        padding: 8px;
+
+        border: 1px solid #ddd;
+
+        border-radius: 4px 0 0 4px;
+
+        font-size: 14px;
+
+    }
+
+    .copy-button {
+
+        padding: 8px 15px;
+
+        background-color: var(--second-color);
+
+        color: white;
+
+        border: none;
+
+        border-radius: 0 4px 4px 0;
+
+        cursor: pointer;
+
+        font-size: 14px;
+
+    }
+
+    .copy-button:hover {
+
+        background-color: #45a049;
+
+    }
+
+    .message-area {
+
+        position: relative;
+
+    }
+
+    #messageTextarea {
+
+        width: 100%;
+
+        padding: 8px;
+
+        padding-right: 40px;
+
+        border: 1px solid #ddd;
+
+        border-radius: 4px;
+
+        box-sizing: border-box;
+
+    }
+
+    .emoji-picker {
+
+        position: absolute;
+
+        top: 100%;
+
+        right: 0;
+
+        background: white;
+
+        border: 1px solid #ddd;
+
+        border-radius: 4px;
+
+        padding: 10px;
+
+        display: none;
+
+        z-index: 1000;
+
+        max-height: 300px;
+
+        overflow-y: auto;
+
+        width: 250px; /* Đặt chiều rộng cố định */
+
+    }
+
+    .emoji-picker.active {
+
+        display: block;
+
+    }
+
+    .emoji-category {
+
+        margin-bottom: 10px;
+
+    }
+
+    .emoji-category-title {
+
+        font-weight: bold;
+
+        margin-bottom: 5px;
+
+    }
+
+    .emoji-list {
+
+        display: flex;
+
+        flex-wrap: wrap;
+
+        gap: 5px;
+
+    }
+
+    .emoji {
+
+        cursor: pointer;
+
+        font-size: 20px;
+
+    }
+
+    .message-area {
+
+        position: relative;
+
+    }
+
+    #emojiButton {
+
+        position: absolute;
+
+        right: 5px;
+
+        bottom: 5px;
+
+        background: none;
+
+        border: none;
+
+        font-size: 20px;
+
+        cursor: pointer;
+
+    }
+
+    
+
+    /* mssic */
+
+    .music-list-container {
+
+        max-height: 150px;
+
+        overflow-y: auto;
+
+        margin-bottom: 10px;
+
+        position: relative;
+
+    }
+
+    
+
+    .music-list {
+
+        /* max-height: 300px;
+
+        overflow-y: auto; */
+
+        margin-bottom: 10px;
+
+    }
+
+    
+
+    .music-item {
+
+        display: flex;
+
+        align-items: center;
+
+        padding: 10px;
+
+        border-bottom: 1px solid #e0e0e0;
+
+        transition: background-color 0.3s;
+
+    }
+
+    
+
+    .music-item:hover {
+
+        background-color: #e8e8e8;
+
+    }
+
+    
+
+    .song-thumbnail {
+
+        width: 50px;
+
+        height: 50px;
+
+        border-radius: 5px;
+
+        margin-right: 15px;
+
+    }
+
+    
+
+    .song-info {
+
+        flex-grow: 1;
+
+    }
+
+    
+
+    .song-title {
+
+        display: block;
+
+        font-weight: bold;
+
+        margin-bottom: 3px;
+
+    }
+
+    
+
+    .song-artist {
+
+        font-size: 0.9em;
+
+        color: #666;
+
+    }
+
+    
+
+    .play-button {
+
+        background: none;
+
+        border: none;
+
+        cursor: pointer;
+
+        font-size: 24px;
+
+        color: #1db954;
+
+    }
+
+    
+
+    .button-container {
+
+        display: flex;
+
+        justify-content: space-between;
+
+        gap: 10px; /* Khoảng cách giữa các nút */
+
+        margin-top: 20px; /* Khoảng cách từ phần trên */
+
+    }
+
+    
+
+    .load-more-button, .upload-music {
+
+        width: 100%;
+
+        padding: 10px;
+
+        margin-top: 10px;
+
+        background-color: #1db954;
+
+        color: white;
+
+        border: none;
+
+        border-radius: 5px;
+
+        cursor: pointer;
+
+        transition: background-color 0.3s;
+
+        position: relative;
+
+    }
+
+    
+
+    .load-more-button:hover, .upload-music:hover {
+
+        background-color: #1ed760;
+
+    }
+
+    /*
+
+    .music-list-container {
+
+        max-width: 300px;
+
+        margin: 20px auto;
+
+    }
+
+    
+
+    .music-list {
+
+        max-height: 200px;
+
+        overflow-y: auto;
+
+        border: 1px solid #ddd;
+
+        border-radius: 5px;
+
+        padding: 10px;
+
+    }
+
+    
+
+    .music-button {
+
+        display: block;
+
+        width: 100%;
+
+        text-align: left;
+
+        padding: 10px;
+
+        margin-bottom: 5px;
+
+        background-color: #f8f8f8;
+
+        border: none;
+
+        border-radius: 5px;
+
+        cursor: pointer;
+
+        transition: background-color 0.3s;
+
+    }
+
+    
+
+    .music-button:hover {
+
+        background-color: #e8e8e8;
+
+    }*/
+
+    
+
+    .music-button .wave {
+
+        position: absolute;
+
+        right: 10px;
+
+        top: 50%;
+
+        transform: translateY(-50%);
+
+        width: 20px;
+
+        height: 20px;
+
+        display: flex;
+
+        justify-content: space-between;
+
+        align-items: flex-end;
+
+    }
+
+    
+
+    .music-button .wave span {
+
+        width: 3px;
+
+        height: 100%;
+
+        background-color: white;
+
+        animation: wave 1s ease-in-out infinite;
+
+    }
+
+    
+
+    .music-button .wave span:nth-child(2) {
+
+        animation-delay: 0.2s;
+
+    }
+
+    
+
+    .music-button .wave span:nth-child(3) {
+
+        animation-delay: 0.4s;
+
+    }
+
+    
+
+    .music-button .wave span:nth-child(4) {
+
+        animation-delay: 0.6s;
+
+    }
+
+    
+
+    @keyframes wave {
+
+        0%, 100% {
+
+            height: 30%;
+
+        }
+
+        50% {
+
+            height: 100%;
+
+        }
+
+    }
+
+    
+
+    .music-button:not(.playing) .wave {
+
+        display: none;
+
+    }
+
+    .upload-mp3 {
+
+        background-color: var(--second-color);
+
+        color: white;
+
+        border: none;
+
+        padding: 10px 15px;
+
+        text-align: center;
+
+        text-decoration: none;
+
+        display: inline-block;
+
+        font-size: 16px;
+
+        margin: 4px 2px;
+
+        cursor: pointer;
+
+        border-radius: 4px;
+
+    }
+
+    .scrollable-container {
+        cursor: grab;
+        user-select: none;
+    }
+    
+    .scrollable-container:active {
+        cursor: grabbing;
+    }
+
+    @media screen and (max-width: 768px) {
+
+        .container {
+
+          flex-direction: column;
+
+          height: auto;
+
+          overflow: visible;
+
+        }
+
+      
+
+        .input-column, .preview-column {
+
+          width: 100%;
+
+          max-width: none;
+
+        }
+
+      
+
+        .preview-column {
+
+          
+
+order: -1;
+
+        max-height: 600px;
+
+        margin-bottom: 20px;
+
+        flex: unset;
+
+        
+
+        
+
+        height: 100vh;
+
+        margin-bottom: 20px;
+
+        flex: unset;
+
+        display: flex;
+
+
+
+        }
+
+
+
+        /* .preview-card{background-size: contain;} */
+
+      
+
+        .input-column {
+
+          overflow-y: visible;
+
+        }
+
+
+
+        .upload-button, .step-button, .load-more-button, .upload-music {
+
+            padding: 15px 10px;
+
+            font-size: 16px;
+
+          }
+
+        
+
+          .emoji-picker {
+
+            width: 100%;
+
+            left: 0;
+
+            right: 0;
+
+          }
+
+
+
+      }
+
+
+
+      .toggle-view-button {
+
+        display: none;
+
+        width: 100%;
+
+        padding: 10px;
+
+        background-color: var(--main-color);
+
+        color: white;
+
+        border: none;
+
+        border-radius: 4px;
+
+        cursor: pointer;
+
+        margin-bottom: 15px;
+
+      }
+
+      
+
+      @media screen and (max-width: 768px) {
+
+        .toggle-view-button {
+
+          display: block;
+
+        }
+
+      }
